@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brandon Crandell — Analytics Engineer · AI/LLM Application Developer</title>
+<meta name="description" content="Brandon Crandell builds production data applications end to end: Spark SQL on Databricks, Python pipelines, React front ends, and AI copilots.">
+<style>
+:root {
+  --bg: #07090f;
+  --bg-soft: #0c101a;
+  --panel: #11161f;
+  --panel-2: #161d29;
+  --line: rgba(120, 160, 220, 0.12);
+  --text: #e8edf5;
+  --muted: #94a3b8;
+  --dim: #5d6b80;
+  --accent: #38e1c6;
+  --accent-2: #7c6cff;
+  --accent-3: #4cc2ff;
+  --grad: linear-gradient(100deg, var(--accent), var(--accent-3) 55%, var(--accent-2));
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, monospace;
+  --sans: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+::selection { background: rgba(56, 225, 198, 0.3); }
+
+/* ---------- Nav ---------- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 5vw;
+  background: rgba(7, 9, 15, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+nav.scrolled { border-bottom-color: var(--line); }
+.logo {
+  font-family: var(--mono); font-size: 1rem; font-weight: 700;
+  color: var(--text); text-decoration: none; letter-spacing: 0.02em;
+}
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 1.8rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-cta {
+  padding: 0.45rem 1rem; border: 1px solid rgba(56, 225, 198, 0.45);
+  border-radius: 8px; color: var(--accent) !important; font-weight: 600;
+}
+.nav-cta:hover { background: rgba(56, 225, 198, 0.1); }
+@media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+/* ---------- Hero ---------- */
+header {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+#net { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-fade {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(7,9,15,0) 0%, rgba(7,9,15,0.55) 75%, var(--bg) 100%),
+    linear-gradient(to bottom, rgba(7,9,15,0.25), rgba(7,9,15,0) 30%, rgba(7,9,15,0) 70%, var(--bg) 100%);
+}
+.hero-inner { position: relative; text-align: center; padding: 0 6vw; max-width: 880px; }
+.hero-kicker {
+  font-family: var(--mono); font-size: 0.85rem; color: var(--accent);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1.2rem;
+}
+.hero-kicker::before { content: "// "; color: var(--dim); }
+h1 {
+  font-size: clamp(2.6rem, 7vw, 4.6rem); font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1.08; margin-bottom: 1rem;
+}
+h1 .grad {
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.rotator {
+  font-family: var(--mono); font-size: clamp(1rem, 2.4vw, 1.3rem);
+  color: var(--muted); height: 2.2em; margin-bottom: 1.4rem;
+}
+.rotator .caret {
+  display: inline-block; width: 0.55em; height: 1.15em; margin-left: 2px;
+  background: var(--accent); vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.hero-sub {
+  color: var(--muted); font-size: 1.05rem; max-width: 620px;
+  margin: 0 auto 2.4rem;
+}
+.hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  padding: 0.85rem 1.7rem; border-radius: 10px; text-decoration: none;
+  font-weight: 600; font-size: 0.95rem; transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary {
+  background: var(--grad); color: #051015;
+  box-shadow: 0 8px 28px rgba(56, 225, 198, 0.25);
+}
+.btn-primary:hover { box-shadow: 0 12px 36px rgba(56, 225, 198, 0.4); }
+.btn-ghost {
+  color: var(--text); border: 1px solid var(--line); background: rgba(255,255,255,0.02);
+}
+.btn-ghost:hover { border-color: rgba(56, 225, 198, 0.45); }
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  color: var(--dim); font-size: 1.4rem; animation: bob 2s ease-in-out infinite;
+  text-decoration: none;
+}
+@keyframes bob { 50% { transform: translate(-50%, 8px); } }
+
+/* ---------- Sections ---------- */
+section { padding: 6rem 6vw; max-width: 1120px; margin: 0 auto; }
+.sec-kicker {
+  font-family: var(--mono); color: var(--accent); font-size: 0.8rem;
+  letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.6rem;
+}
+.sec-kicker::before { content: "// "; color: var(--dim); }
+h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 750; letter-spacing: -0.01em; margin-bottom: 0.7rem; }
+.sec-sub { color: var(--muted); max-width: 640px; margin-bottom: 3rem; }
+
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- Stats ---------- */
+.stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden;
+}
+.stat { background: var(--panel); padding: 2rem 1.6rem; }
+.stat-num {
+  font-family: var(--mono); font-size: 2.3rem; font-weight: 700;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.stat-label { color: var(--muted); font-size: 0.88rem; margin-top: 0.3rem; }
+
+/* ---------- Projects ---------- */
+.projects { display: grid; gap: 1.5rem; }
+.project {
+  position: relative; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 18px; padding: 2.2rem; overflow: hidden;
+  transition: transform 0.2s, border-color 0.25s;
+}
+.project::before {
+  content: ""; position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(76, 194, 255, 0.07), transparent 45%);
+  transition: opacity 0.3s; pointer-events: none;
+}
+.project:hover { transform: translateY(-3px); border-color: rgba(76, 194, 255, 0.3); }
+.project:hover::before { opacity: 1; }
+.project-tag {
+  display: inline-block; font-family: var(--mono); font-size: 0.72rem;
+  color: var(--accent-3); border: 1px solid rgba(76, 194, 255, 0.35);
+  padding: 0.18rem 0.6rem; border-radius: 99px; margin-bottom: 1rem;
+  letter-spacing: 0.06em;
+}
+.project h3 { font-size: 1.35rem; margin-bottom: 0.8rem; }
+.par-grid { display: grid; gap: 0.75rem; margin: 1.1rem 0 1.3rem; }
+.par-row { display: grid; grid-template-columns: 86px 1fr; gap: 0.8rem; font-size: 0.93rem; }
+.par-key { font-family: var(--mono); color: var(--accent); font-size: 0.78rem; padding-top: 0.15rem; letter-spacing: 0.05em; }
+.par-val { color: var(--muted); }
+.par-val strong { color: var(--text); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip {
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  background: var(--panel-2); border: 1px solid var(--line);
+  padding: 0.22rem 0.65rem; border-radius: 6px;
+}
+
+/* ---------- Copilot ---------- */
+.copilot-wrap {
+  border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  background: var(--panel); box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+}
+.copilot-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--panel-2); padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 0.82rem; color: var(--muted);
+}
+.dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+.copilot-bar .title { margin-left: 0.5rem; }
+.copilot-bar .live {
+  margin-left: auto; color: var(--accent); display: flex; align-items: center; gap: 0.4rem;
+}
+.live::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: 0.25; } }
+#chat-log {
+  height: 380px; overflow-y: auto; padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+  scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+}
+.msg { max-width: 82%; padding: 0.75rem 1rem; border-radius: 14px; font-size: 0.93rem; }
+.msg.user {
+  align-self: flex-end; background: rgba(124, 108, 255, 0.16);
+  border: 1px solid rgba(124, 108, 255, 0.3); border-bottom-right-radius: 4px;
+}
+.msg.bot {
+  align-self: flex-start; background: var(--panel-2);
+  border: 1px solid var(--line); border-bottom-left-radius: 4px; color: var(--muted);
+}
+.msg.bot strong { color: var(--text); }
+.msg.bot .b-label {
+  display: block; font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
+  letter-spacing: 0.08em; margin-bottom: 0.35rem;
+}
+.typing { display: inline-flex; gap: 4px; padding: 0.3rem 0; }
+.typing i {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--dim);
+  animation: tdot 1.2s ease-in-out infinite;
+}
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes tdot { 40% { transform: translateY(-5px); background: var(--accent); } }
+.suggest { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0 1.4rem 1rem; }
+.suggest button {
+  font-family: var(--mono); font-size: 0.74rem; color: var(--accent-3);
+  background: rgba(76, 194, 255, 0.07); border: 1px solid rgba(76, 194, 255, 0.3);
+  padding: 0.4rem 0.8rem; border-radius: 99px; cursor: pointer; transition: background 0.2s;
+}
+.suggest button:hover { background: rgba(76, 194, 255, 0.16); }
+.chat-input {
+  display: flex; gap: 0.7rem; padding: 1rem 1.4rem;
+  border-top: 1px solid var(--line); background: var(--panel-2);
+}
+.chat-input input {
+  flex: 1; background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: 10px; padding: 0.7rem 1rem; color: var(--text);
+  font-size: 0.92rem; outline: none; font-family: var(--sans);
+}
+.chat-input input:focus { border-color: rgba(56, 225, 198, 0.5); }
+.chat-input button {
+  background: var(--grad); border: none; border-radius: 10px;
+  padding: 0 1.3rem; font-weight: 700; color: #051015; cursor: pointer; font-size: 0.92rem;
+}
+
+/* ---------- Timeline ---------- */
+.timeline { position: relative; margin-left: 0.4rem; }
+.timeline::before {
+  content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px;
+  width: 2px; background: linear-gradient(var(--accent), var(--accent-2));
+  opacity: 0.35;
+}
+.t-item { position: relative; padding: 0 0 2.4rem 2.4rem; }
+.t-item:last-child { padding-bottom: 0; }
+.t-item::before {
+  content: ""; position: absolute; left: 0; top: 7px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--accent);
+  box-shadow: 0 0 12px rgba(56, 225, 198, 0.45);
+}
+.t-date { font-family: var(--mono); font-size: 0.76rem; color: var(--accent); letter-spacing: 0.06em; }
+.t-item h3 { font-size: 1.12rem; margin: 0.25rem 0 0.1rem; }
+.t-co { color: var(--dim); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.t-item p { color: var(--muted); font-size: 0.93rem; max-width: 680px; }
+
+/* ---------- Skills ---------- */
+.skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.3rem; }
+.skill-card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 16px; padding: 1.6rem; transition: border-color 0.25s;
+}
+.skill-card:hover { border-color: rgba(124, 108, 255, 0.4); }
+.skill-card h3 { font-size: 0.98rem; margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.55rem; }
+.skill-card h3 .ico { font-size: 1.15rem; }
+
+/* ---------- Contact ---------- */
+.contact-box {
+  text-align: center; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 22px; padding: 4rem 2rem; position: relative; overflow: hidden;
+}
+.contact-box::before {
+  content: ""; position: absolute; inset: -40%;
+  background: radial-gradient(circle at 50% 120%, rgba(124, 108, 255, 0.16), transparent 55%);
+  pointer-events: none;
+}
+.contact-box h2 { margin-bottom: 0.6rem; }
+.contact-box p { color: var(--muted); max-width: 520px; margin: 0 auto 2rem; }
+.contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+footer {
+  text-align: center; color: var(--dim); font-size: 0.8rem;
+  padding: 2.5rem 1rem; border-top: 1px solid var(--line);
+  font-family: var(--mono);
+}
+footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="logo" href="#top">brandon<span>.</span>crandell<span>()</span></a>
+  <div class="nav-links">
+    <a href="#impact">Impact</a>
+    <a href="#projects">Projects</a>
+    <a href="#code">Code</a>
+    <a href="#copilot">Ask AI</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a class="nav-cta" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<header id="top">
+  <canvas id="net"></canvas>
+  <div class="hero-fade"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker">Detroit, MI &middot; Analytics Engineering &middot; AI/LLM Applications</div>
+    <h1>Brandon Crandell builds <span class="grad">trusted data products</span> — and turns them into <span class="grad">decisions that move the numbers</span>.</h1>
+    <div class="rotator"><span id="rotator-text"></span><span class="caret"></span></div>
+    <p class="hero-sub">
+      From the Spark SQL that pulls the data, to the Python that refreshes it, to the React
+      front end that presents it, to the AI copilot that answers questions about it in plain English.
+      12+ years across insurtech, automotive, and manufacturing — turning messy business
+      questions into numbers people trust, then into decisions worth real money.
+    </p>
+    <div class="hero-btns">
+      <a class="btn btn-primary" href="#projects">See the work</a>
+      <a class="btn btn-ghost" href="mailto:bpcrandell@gmail.com?subject=Resume%20request">Request resume</a>
+    </div>
+  </div>
+  <a class="scroll-hint" href="#impact">&#x2193;</a>
+</header>
+
+<section id="impact">
+  <div class="sec-kicker reveal">impact</div>
+  <h2 class="reveal">Numbers that were checked against the source.</h2>
+  <p class="sec-sub reveal">The work below is described in broad strokes on purpose — but the standard behind it isn't vague: every migrated metric gets validated against its system of record before anyone relies on it.</p>
+  <div class="stats reveal">
+    <div class="stat"><div class="stat-num"><span class="count" data-to="12">0</span>+</div><div class="stat-label">years across insurtech, automotive, and manufacturing data</div></div>
+    <div class="stat"><div class="stat-num"><span class="count" data-to="200">0</span>+</div><div class="stat-label">people relying on dashboards and platforms he's built</div></div>
+    <div class="stat"><div class="stat-num">$MM</div><div class="stat-label">scale of financial reporting errors caught &amp; corrected before they cost money</div></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-kicker reveal">featured projects</div>
+  <h2 class="reveal">Case studies</h2>
+  <p class="sec-sub reveal">Problem &rarr; what I did &rarr; what changed.</p>
+  <div class="projects">
+
+    <div class="project reveal">
+      <span class="project-tag">FLAGSHIP &middot; INSURTECH</span>
+      <h3>Enterprise AI Reporting Platform</h3>
+      <div class="par-grid">
+        <div class="par-row"><div class="par-key">PROBLEM</div><div class="par-val">Dozens of legacy BI reports and spreadsheets scattered across the business — no single source of truth, no consistent access control, analysts fielding the same questions daily.</div></div>
+        <div class="par-row"><div class="par-key">BUILT</div><div class="par-val">An SSO-secured, self-serve platform with config-driven publishing: register a report and the pipeline generates the Python refresh job, the React route, and the access-control registry. Embedded an <strong>AI chat copilot</strong> on a modular skill framework so non-technical users query the data in plain English.</div></div>
+        <div class="par-row"><div class="par-key">RESULT</div><div class="par-val">A sprawl of legacy reports became <strong>one trusted platform</strong> serving 200+ people across the company, every migrated metric validated against source before cutover. Replacing per-seat commercial BI licenses with the company's own SSO-protected suite cut roughly <strong>$35K a year</strong> in software costs — and new reports now ship through one repeatable path instead of one-off builds that used to run into weeks.</div></div>
+      </div>
+      <div class="chips"><span class="chip">Spark SQL</span><span class="chip">Databricks</span><span class="chip">Python</span><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">LLM copilot</span><span class="chip">SSO/RBAC</span><span class="chip">REST APIs</span></div>
+    </div>
+
+    <div class="project reveal">
+      <span class="project-tag">STRATEGIC INITIATIVE &middot; PROFITABILITY</span>
+      <h3>A Lead-Source Change Worth $120K a Year</h3>
+      <div class="par-grid">
+        <div class="par-row"><div class="par-key">PROBLEM</div><div class="par-val">Consumers moving through the lead funnel weren't always landing on the best-fit outcome — leaving profit on the table at the exact moment they convert.</div></div>
+        <div class="par-row"><div class="par-key">BUILT</div><div class="par-val">Dug into the funnel to find where consumer behavior could be steered toward better-fit matches, then partnered with the business to change how leads flow through the source — turning a data insight into an <strong>operational change</strong>, not just a chart.</div></div>
+        <div class="par-row"><div class="par-key">RESULT</div><div class="par-val">~<strong>$120K in additional profit a year</strong> through the lead source — a recurring, year-over-year gain that <strong>stacks</strong> rather than a one-time bump, by improving the fit between consumers and outcomes instead of only reporting on it.</div></div>
+      </div>
+      <div class="chips"><span class="chip">Funnel analysis</span><span class="chip">Consumer behavior</span><span class="chip">Profit optimization</span><span class="chip">Lead strategy</span><span class="chip">Recurring impact</span><span class="chip">Business partnership</span></div>
+    </div>
+
+    <div class="project reveal">
+      <span class="project-tag">WEB PORTAL &middot; AUTOMOTIVE</span>
+      <h3>Dealer Network Data Portal</h3>
+      <div class="par-grid">
+        <div class="par-row"><div class="par-key">PROBLEM</div><div class="par-val">A major automaker's nationwide dealer network needed a secure way to submit their own data, plus reliable dashboards for enrollments, onboarding, and lead audits.</div></div>
+        <div class="par-row"><div class="par-key">BUILT</div><div class="par-val">A secure self-serve upload portal with the CRM integrations behind it, plus Power BI dashboards on SQL Server — requirements through data modeling through refresh debugging.</div></div>
+        <div class="par-row"><div class="par-key">RESULT</div><div class="par-val">Dealers upload directly instead of emailing files; dashboards serve a dealer network of <strong>thousands</strong>.</div></div>
+      </div>
+      <div class="chips"><span class="chip">Web portal</span><span class="chip">CRM integration</span><span class="chip">Power BI</span><span class="chip">SQL Server</span><span class="chip">Data modeling</span></div>
+    </div>
+
+  </div>
+</section>
+
+<section id="code">
+  <div class="sec-kicker reveal">public code</div>
+  <h2 class="reveal">Don't take my word for it — read the code.</h2>
+  <p class="sec-sub reveal">The case studies above are deliberately vague to respect employer confidentiality. So I rebuilt the same patterns in the open, on synthetic data — exact numbers, full source, tests and all.</p>
+  <div class="projects">
+
+    <div class="project reveal">
+      <span class="project-tag">OPEN SOURCE &middot; ANALYTICS ENGINEERING</span>
+      <h3>dealer-analytics-warehouse</h3>
+      <div class="par-grid">
+        <div class="par-row"><div class="par-key">WHAT</div><div class="par-val">A complete dbt + DuckDB analytics-engineering pipeline over a synthetic auto-insurance dealer funnel: staging layer, <strong>SCD2 snapshot</strong>, dimensional marts, and documented metric definitions.</div></div>
+        <div class="par-row"><div class="par-key">PROOF</div><div class="par-val"><strong>29 passing dbt tests</strong> guard the pipeline — the same source-of-truth discipline from the case studies, written down where anyone can audit it.</div></div>
+      </div>
+      <div class="chips"><span class="chip">dbt</span><span class="chip">DuckDB</span><span class="chip">SCD2</span><span class="chip">Dimensional marts</span><span class="chip">29 dbt tests</span></div>
+      <p style="margin-top: 1.1rem;"><a class="btn btn-ghost" href="https://github.com/bpcrandell/dealer-analytics-warehouse" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>
+    </div>
+
+    <div class="project reveal">
+      <span class="project-tag">OPEN SOURCE &middot; AI / LLM</span>
+      <h3>ask-the-warehouse</h3>
+      <div class="par-grid">
+        <div class="par-row"><div class="par-key">WHAT</div><div class="par-val">An AI copilot over a DuckDB warehouse — the real version of the demo on this page. It grounds an LLM in the live schema, generates <strong>read-only SQL behind guardrails</strong>, and returns every answer with the exact SQL it ran.</div></div>
+        <div class="par-row"><div class="par-key">PROOF</div><div class="par-val"><strong>18 passing tests</strong> cover the guardrails and query generation. Trust isn't a vibe — every answer shows its work.</div></div>
+      </div>
+      <div class="chips"><span class="chip">NL-to-SQL</span><span class="chip">LLM grounding</span><span class="chip">Query guardrails</span><span class="chip">Python</span><span class="chip">18 tests</span></div>
+      <p style="margin-top: 1.1rem;"><a class="btn btn-ghost" href="https://github.com/bpcrandell/ask-the-warehouse" target="_blank" rel="noopener">View on GitHub &rarr;</a></p>
+    </div>
+
+  </div>
+</section>
+
+<section id="copilot">
+  <div class="sec-kicker reveal">interactive demo</div>
+  <h2 class="reveal">Ask the copilot about me.</h2>
+  <p class="sec-sub reveal">I build AI copilots over enterprise reporting data for a living. This one runs on something simpler — but the idea is the same: ask in plain English, get a grounded answer.</p>
+  <div class="copilot-wrap reveal">
+    <div class="copilot-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="title">brandon-copilot — v1.0</span>
+      <span class="live">online</span>
+    </div>
+    <div id="chat-log"></div>
+    <div class="suggest" id="suggest"></div>
+    <div class="chat-input">
+      <input id="chat-box" type="text" placeholder="Ask about Brandon's work, stack, or background…" autocomplete="off">
+      <button id="chat-send">Send</button>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-kicker reveal">experience</div>
+  <h2 class="reveal">A decade-plus of making operations run on data.</h2>
+  <p class="sec-sub reveal">Manufacturing floors taught me what happens when numbers are wrong. Everything since has been about making sure they're right.</p>
+  <div class="timeline">
+    <div class="t-item reveal">
+      <div class="t-date">2024 — PRESENT</div>
+      <h3>Senior Business Insights Analyst</h3>
+      <div class="t-co">Insurtech · Detroit, MI</div>
+      <p>Built an SSO-secured, self-serve enterprise reporting platform with an embedded LLM copilot, ran a legacy BI migration with 1:1 source validation, and integrated CRM, telephony, and ticketing systems into the reporting stack.</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-date">2022 — 2024</div>
+      <h3>Consultant &amp; Analyst</h3>
+      <div class="t-co">Automotive Analytics Consultancy · Detroit, MI</div>
+      <p>Built a secure data-upload portal and CRM integrations for a major automaker's dealer network; built and maintained Power BI dashboards on SQL Server; automated manual reporting with SQL and SSIS.</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-date">2016 — 2020</div>
+      <h3>Production Scheduler</h3>
+      <div class="t-co">Large-Scale Produce Distributor</div>
+      <p>Scheduled production across 23 product lines in Dynamics NAV/JDA, consistently on-time and under budget, supporting a multi-billion-dollar portfolio.</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-date">2014 — 2016</div>
+      <h3>Business Analyst</h3>
+      <div class="t-co">Industrial Manufacturer</div>
+      <p>Led an Epicor ERP rollout that substantially cut order-processing work and halved the planning backlog while the product portfolio doubled in value.</p>
+    </div>
+    <div class="t-item reveal">
+      <div class="t-date">2007 — 2014</div>
+      <h3>Production Analyst / Supplier Liaison</h3>
+      <div class="t-co">Defense Manufacturer</div>
+      <p>Ran defense production planning in SAP/Epicor — work that helped land a major follow-on contract — and managed procurement and vendor relations under SLAs.</p>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-kicker reveal">skills</div>
+  <h2 class="reveal">The stack</h2>
+  <p class="sec-sub reveal">MBA (Management + Technology, Information Systems &amp; Analytics) and BS in Information Systems Management, Wayne State University.</p>
+  <div class="skill-grid">
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x1F9F1;</span> Data &amp; Analytics Engineering</h3>
+      <div class="chips"><span class="chip">SQL</span><span class="chip">Spark SQL</span><span class="chip">T-SQL</span><span class="chip">dbt</span><span class="chip">Databricks</span><span class="chip">Unity Catalog</span><span class="chip">DuckDB</span><span class="chip">Dimensional modeling</span><span class="chip">SCD2</span><span class="chip">ELT/ETL</span><span class="chip">Scheduled refresh jobs</span><span class="chip">SSIS</span><span class="chip">SQL Server</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x1F916;</span> AI / LLM Applications</h3>
+      <div class="chips"><span class="chip">LLM app development</span><span class="chip">AI copilots</span><span class="chip">NL-to-SQL</span><span class="chip">Grounding &amp; guardrails</span><span class="chip">Skill frameworks</span><span class="chip">Prompt &amp; context engineering</span><span class="chip">System-prompt design</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x1F310;</span> Full-Stack &amp; Web</h3>
+      <div class="chips"><span class="chip">Python</span><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">JavaScript</span><span class="chip">Node.js</span><span class="chip">REST APIs</span><span class="chip">SSO</span><span class="chip">RBAC</span><span class="chip">Config-driven architecture</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x2705;</span> Data Quality &amp; Migration</h3>
+      <div class="chips"><span class="chip">Source-of-truth validation</span><span class="chip">1:1 reconciliation</span><span class="chip">Data-quality testing (dbt tests)</span><span class="chip">Legacy BI migration</span><span class="chip">Metric definitions &amp; governance</span><span class="chip">Cohort analysis</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x1F517;</span> Platforms &amp; Integrations</h3>
+      <div class="chips"><span class="chip">Power BI</span><span class="chip">Azure Blob</span><span class="chip">Salesforce</span><span class="chip">Genesys</span><span class="chip">JIRA / JSM API</span><span class="chip">Git</span><span class="chip">Agile</span><span class="chip">Oracle</span><span class="chip">SAP</span><span class="chip">Epicor</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <h3><span class="ico">&#x1F698;</span> Domain</h3>
+      <div class="chips"><span class="chip">Insurtech</span><span class="chip">Dealer-channel analytics</span><span class="chip">Lead-to-policy funnels</span><span class="chip">Partner &amp; referral payments</span><span class="chip">New-business profitability</span><span class="chip">CRM &amp; telephony data</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-box reveal">
+    <h2>Let's build something <span style="background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;">trustworthy</span>.</h2>
+    <p>Have an interesting data or AI problem? Brandon is always glad to talk shop — full work history and references available on request.</p>
+    <div class="contact-links">
+      <a class="btn btn-primary" href="mailto:bpcrandell@gmail.com">bpcrandell@gmail.com</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/brandoncrandell" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn btn-ghost" href="https://github.com/bpcrandell" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>&copy; 2026 Brandon Crandell &middot; single HTML file, zero dependencies &middot; built with care in Detroit</span>
+</footer>
+
+<script>
+/* ---------- Particle network hero ---------- */
+(() => {
+  const canvas = document.getElementById('net');
+  const ctx = canvas.getContext('2d');
+  let W, H, pts = [], mouse = { x: -9999, y: -9999 };
+  const DENSITY = 1 / 14000, LINK = 130, MOUSE_LINK = 190;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth * devicePixelRatio;
+    H = canvas.height = canvas.offsetHeight * devicePixelRatio;
+    const n = Math.min(140, Math.floor((canvas.offsetWidth * canvas.offsetHeight) * DENSITY));
+    pts = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.35 * devicePixelRatio,
+      vy: (Math.random() - 0.5) * 0.35 * devicePixelRatio,
+      r: (Math.random() * 1.6 + 0.7) * devicePixelRatio
+    }));
+  }
+  resize();
+  addEventListener('resize', resize);
+  addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = (e.clientX - rect.left) * devicePixelRatio;
+    mouse.y = (e.clientY - rect.top) * devicePixelRatio;
+  });
+  addEventListener('mouseout', () => { mouse.x = mouse.y = -9999; });
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    const linkD = LINK * devicePixelRatio, mouseD = MOUSE_LINK * devicePixelRatio;
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    }
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i];
+      for (let j = i + 1; j < pts.length; j++) {
+        const b = pts[j];
+        const dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+        if (d < linkD) {
+          ctx.strokeStyle = `rgba(86, 178, 220, ${(1 - d / linkD) * 0.28})`;
+          ctx.lineWidth = devicePixelRatio * 0.7;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+      const md = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+      if (md < mouseD) {
+        ctx.strokeStyle = `rgba(56, 225, 198, ${(1 - md / mouseD) * 0.5})`;
+        ctx.lineWidth = devicePixelRatio;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+      }
+      ctx.fillStyle = 'rgba(140, 200, 235, 0.85)';
+      ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2); ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ---------- Title rotator ---------- */
+(() => {
+  const titles = [
+    'Analytics Engineer',
+    'AI / LLM Application Developer',
+    'Full-Stack Data Developer',
+    'SELECT trust FROM every_metric;'
+  ];
+  const el = document.getElementById('rotator-text');
+  let t = 0, i = 0, deleting = false;
+  function tick() {
+    const cur = titles[t];
+    el.textContent = cur.slice(0, i);
+    let delay = deleting ? 28 : 55;
+    if (!deleting && i === cur.length) { delay = 1900; deleting = true; }
+    else if (deleting && i === 0) { deleting = false; t = (t + 1) % titles.length; delay = 350; }
+    else i += deleting ? -1 : 1;
+    setTimeout(tick, delay);
+  }
+  tick();
+})();
+
+/* ---------- Scroll reveal + nav ---------- */
+(() => {
+  const obs = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 30), { passive: true });
+
+  document.querySelectorAll('.project').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+})();
+
+/* ---------- Count-up stats ---------- */
+(() => {
+  const ease = x => 1 - Math.pow(1 - x, 3);
+  const obs = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      obs.unobserve(e.target);
+      const to = +e.target.dataset.to, start = performance.now(), dur = 1600;
+      (function step(now) {
+        const p = Math.min(1, (now - start) / dur);
+        e.target.textContent = Math.round(ease(p) * to);
+        if (p < 1) requestAnimationFrame(step);
+      })(start);
+    }
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.count').forEach(el => obs.observe(el));
+})();
+
+/* ---------- Copilot demo ---------- */
+(() => {
+  const log = document.getElementById('chat-log');
+  const box = document.getElementById('chat-box');
+  const send = document.getElementById('chat-send');
+  const suggestWrap = document.getElementById('suggest');
+
+  const KB = [
+    { keys: ['build', 'built', 'hub', 'reporting', 'platform', 'current', 'now', 'recent', 'polly'],
+      a: "In his current role at an insurtech company, Brandon built an <strong>enterprise AI reporting platform</strong> — an SSO-secured hub that consolidated dozens of scattered legacy BI reports into one self-serve source of truth, used by 200+ people. By running on the company's own SSO-protected stack instead of per-seat commercial BI licenses, it also cut roughly <strong>$35K a year</strong> in software costs. He set up config-driven publishing (register a report → Python refresh job, React route, and access rules generate automatically) and embedded an AI chat copilot so non-technical users can query the data in plain English. Sound familiar? You're using the same idea right now." },
+    { keys: ['profit', '120', '120k', 'lead source', 'consumer', 'behavior', 'initiative', 'strategic', 'revenue', 'money'],
+      a: "Brandon led a strategic initiative that influenced consumer behavior in the lead funnel — steering consumers toward better-fit outcomes at the point of conversion. By turning a data insight into an actual operational change to how leads flow through the source, it drove roughly <strong>$120K in additional profit a year</strong> — and because it changed the funnel itself, that's a recurring gain that stacks year over year, not a one-time win. The point: he doesn't just report the number, he moves it." },
+    { keys: ['stack', 'tech', 'skill', 'tools', 'language', 'sql', 'python', 'react'],
+      a: "Core stack: <strong>Spark SQL on Databricks</strong> (Unity Catalog, heavy multi-CTE work, SCD2 dimensions), <strong>Python</strong> for refresh pipelines, <strong>React + TypeScript</strong> front ends, and <strong>LLM application development</strong> — copilots, skill frameworks, prompt & context engineering. Plus the integration layer: CRM, telephony, and ticketing APIs, Azure Blob, SSO/RBAC." },
+    { keys: ['ai', 'llm', 'copilot', 'chat', 'prompt'],
+      a: "Brandon built and maintains a production <strong>AI chat copilot</strong> over enterprise reporting data: a standardized, modular skill framework so business logic stays consistent, plus careful system-prompt and context-window management — curating exactly which fields and indexes the model sees. It lets non-technical users across the company ask questions of the data in plain English." },
+    { keys: ['hire', 'why', 'fit', 'strength', 'different'],
+      a: "Three reasons: <strong>(1)</strong> he ships end to end — SQL to pipeline to UI to AI layer, no handoffs needed. <strong>(2)</strong> he treats trust as the product — every migrated metric validated 1:1 against the source before anyone relies on it. <strong>(3)</strong> he does the unglamorous part: getting business, Finance, and engineering teams to agree on what a metric <em>means</em> before it ships." },
+    { keys: ['background', 'history', 'career', 'experience', 'story', 'manufacturing'],
+      a: "Brandon's path runs from defense manufacturing production planning, through ERP rollouts and large-scale production scheduling, to automotive dealer-network analytics, and now insurtech. Manufacturing taught him what happens when the numbers are wrong — everything since has been about making them right. MBA + BS in Information Systems from Wayne State." },
+    { keys: ['github', 'open source', 'open-source', 'repo', 'public', 'code', 'dbt', 'duckdb', 'warehouse', 'portfolio'],
+      a: "Two public repos at <strong>github.com/bpcrandell</strong>, both on synthetic data so everything can be shown: <strong>dealer-analytics-warehouse</strong> — a dbt + DuckDB pipeline with a staging layer, SCD2 snapshot, dimensional marts, documented metric definitions, and 29 passing dbt tests; and <strong>ask-the-warehouse</strong> — an AI copilot that grounds an LLM in a live warehouse schema, generates read-only SQL behind guardrails, and returns every answer with the SQL it ran (18 passing tests). The real version of the demo you're talking to." },
+    { keys: ['validation', 'quality', 'trust', 'reconcil', 'validate', 'governance', 'definition'],
+      a: "Brandon's rule: a metric isn't done until it's been <strong>reconciled 1:1 against its source of truth</strong> — and the definition behind it has been agreed on by every team that uses it. He's eliminated manual spot-checking by designing validations that match rebuilt reports exactly to legacy systems, and he fixes definitions at the data source so legacy and new reporting agree. In his public dbt project, that discipline shows up as 29 automated tests." },
+    { keys: ['education', 'degree', 'school', 'mba', 'wayne'],
+      a: "Wayne State University, Mike Ilitch School of Business: <strong>MBA</strong> with a dual concentration in Management and TISA (Technology, Information Systems & Analytics), and a <strong>BS in Business Administration</strong> majoring in Information Systems Management." },
+    { keys: ['contact', 'email', 'reach', 'linkedin', 'github', 'resume'],
+      a: "Email <strong>bpcrandell@gmail.com</strong>, find him on LinkedIn at <strong>linkedin.com/in/brandoncrandell</strong>, or GitHub at <strong>github.com/bpcrandell</strong>. The full resume is available on request. He's Detroit-based and remote-friendly." },
+    { keys: ['detroit', 'location', 'where', 'remote'],
+      a: "Brandon is based in <strong>Detroit, MI</strong> and open to remote roles. Detroit: where both cars and good dashboards are assembled." }
+  ];
+  const FALLBACK = "That one's outside my context window 🙂 — try asking about the reporting platform Brandon built, the $120K-a-year lead-source initiative, his tech stack, the AI copilot work, or why you should hire him. Or just email him: <strong>bpcrandell@gmail.com</strong>.";
+  const SUGGESTIONS = [
+    "What does Brandon build?",
+    "How did he add $120K/yr in profit?",
+    "Where can I see his code?",
+    "Why should I hire him?"
+  ];
+
+  function addMsg(html, who) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + who;
+    if (who === 'bot') div.innerHTML = '<span class="b-label">BRANDON-COPILOT</span>' + html;
+    else div.textContent = html;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  function answer(q) {
+    const ql = q.toLowerCase();
+    let best = null, bestScore = 0;
+    for (const item of KB) {
+      const score = item.keys.filter(k => ql.includes(k)).length;
+      if (score > bestScore) { bestScore = score; best = item; }
+    }
+    return best ? best.a : FALLBACK;
+  }
+
+  function typeOut(el, html) {
+    // Type plain text progressively, then swap in formatted HTML
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    const text = tmp.textContent;
+    let i = 0;
+    const label = '<span class="b-label">BRANDON-COPILOT</span>';
+    (function step() {
+      i = Math.min(text.length, i + 2 + Math.floor(Math.random() * 3));
+      el.innerHTML = label + text.slice(0, i);
+      log.scrollTop = log.scrollHeight;
+      if (i < text.length) setTimeout(step, 14);
+      else el.innerHTML = label + html;
+    })();
+  }
+
+  function ask(q) {
+    if (!q.trim()) return;
+    addMsg(q, 'user');
+    box.value = '';
+    const t = document.createElement('div');
+    t.className = 'msg bot';
+    t.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+    log.appendChild(t);
+    log.scrollTop = log.scrollHeight;
+    setTimeout(() => typeOut(t, answer(q)), 650 + Math.random() * 500);
+  }
+
+  send.addEventListener('click', () => ask(box.value));
+  box.addEventListener('keydown', e => { if (e.key === 'Enter') ask(box.value); });
+
+  SUGGESTIONS.forEach(s => {
+    const b = document.createElement('button');
+    b.textContent = s;
+    b.addEventListener('click', () => ask(s));
+    suggestWrap.appendChild(b);
+  });
+
+  addMsg("Hi! I'm a tiny demo of the kind of copilot Brandon builds for real over enterprise data. Ask me anything about his work — or tap a suggestion below.", 'bot');
+})();
+</script>
+
+<!-- GoatCounter — privacy-friendly visitor analytics (no cookies, no banner needed).
+     Active once the "bpcrandell" site code is registered at goatcounter.com.
+     Dashboard will live at https://bpcrandell.goatcounter.com -->
+<script data-goatcounter="https://bpcrandell.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
